@@ -15,16 +15,7 @@ const { Title, Text } = Typography;
 const Scene = dynamic(() => import("@/components/Scene/Scene"), {
   ssr: false,
   loading: () => (
-    <div
-      style={{
-        height: "600px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#1a1a1a",
-        borderRadius: "8px",
-      }}
-    >
+    <div className="h-[600px] flex items-center justify-center bg-gray-900 rounded-lg">
       <Text>Loading 3D Scene...</Text>
     </div>
   ),
@@ -32,43 +23,31 @@ const Scene = dynamic(() => import("@/components/Scene/Scene"), {
 
 export default function Home() {
   return (
-    <div
-      style={{
-        padding: "24px",
-        minHeight: "100vh",
-        background: "#0a0a0a",
-      }}
-    >
-      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+    <div className="p-6 min-h-screen bg-gray-950">
+      <Space direction="vertical" size="large" className="w-full">
         {/* 헤더 */}
-        <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <Title level={1} style={{ color: "#ffffff", marginBottom: "8px" }}>
+        <div className="text-center mb-6">
+          <Title level={1} className="text-white mb-2">
             3D Rotation Visualizer
           </Title>
-          <Text type="secondary" style={{ fontSize: "16px" }}>
+          <Text type="secondary" className="text-base">
             Interactive tool for understanding transformation matrices, RPY,
             Euler angles, and ZYZ rotations
           </Text>
         </div>
 
         {/* 메인 레이아웃 */}
-        <Row gutter={[24, 24]}>
+        <Row gutter={[24, 24]} className="min-h-[calc(100vh-200px)]">
           {/* 3D Scene */}
-          <Col xs={24} lg={16}>
+          <Col xs={24} lg={16} className="min-h-[600px]">
             <Card
               title="3D Visualization"
-              style={{ height: "100%", padding: "16px" }}
+              className="h-full flex flex-col"
+              bodyStyle={{ flex: 1, padding: "16px" }}
             >
               <Suspense
                 fallback={
-                  <div
-                    style={{
-                      height: "600px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <div className="h-[600px] flex items-center justify-center">
                     <Text>Loading...</Text>
                   </div>
                 }
@@ -80,40 +59,50 @@ export default function Home() {
 
           {/* 컨트롤 패널 */}
           <Col xs={24} lg={8}>
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              {/* Matrix Display */}
-              <Card
-                title="Current Rotation Matrix"
-                size="small"
-                variant="borderless"
-              >
-                <MatrixDisplay />
-              </Card>
+            <div className="max-h-[calc(100vh-200px)] overflow-y-auto overflow-x-hidden pr-2">
+              <Space direction="vertical" size="middle" className="w-full">
+                {/* Matrix Display */}
+                <Card
+                  title="Current Rotation Matrix"
+                  size="small"
+                  variant="borderless"
+                >
+                  <MatrixDisplay />
+                </Card>
 
-              {/* Matrix Direct Input */}
-              <Card
-                title="Transformation Matrix"
-                size="small"
-                variant="borderless"
-              >
-                <MatrixInputs />
-              </Card>
+                {/* Matrix Direct Input */}
+                <Card
+                  title="Transformation Matrix"
+                  size="small"
+                  variant="borderless"
+                >
+                  <MatrixInputs />
+                </Card>
 
-              {/* RPY Controls */}
-              <Card title="Roll-Pitch-Yaw" size="small" variant="borderless">
-                <RPYInputs />
-              </Card>
+                {/* RPY Controls */}
+                <Card title="Roll-Pitch-Yaw" size="small" variant="borderless">
+                  <RPYInputs />
+                </Card>
 
-              {/* Euler Controls */}
-              <Card title="XYZ Euler Angles" size="small" variant="borderless">
-                <EulerInputs />
-              </Card>
+                {/* Euler Controls */}
+                <Card
+                  title="XYZ Euler Angles"
+                  size="small"
+                  variant="borderless"
+                >
+                  <EulerInputs />
+                </Card>
 
-              {/* ZYZ Controls */}
-              <Card title="ZYZ Euler Angles" size="small" variant="borderless">
-                <ZYZInputs />
-              </Card>
-            </Space>
+                {/* ZYZ Controls */}
+                <Card
+                  title="ZYZ Euler Angles"
+                  size="small"
+                  variant="borderless"
+                >
+                  <ZYZInputs />
+                </Card>
+              </Space>
+            </div>
           </Col>
         </Row>
 
@@ -122,43 +111,16 @@ export default function Home() {
           <Col xs={24} md={12}>
             <Card title="Color Legend" size="small" variant="borderless">
               <Space direction="vertical" size="small">
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "4px",
-                      background: "#ff0000",
-                      borderRadius: "2px",
-                    }}
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-1 bg-red-500 rounded-sm" />
                   <Text>X-Axis (Red)</Text>
                 </div>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "4px",
-                      background: "#00ff00",
-                      borderRadius: "2px",
-                    }}
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-1 bg-green-500 rounded-sm" />
                   <Text>Y-Axis (Green)</Text>
                 </div>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
-                  <div
-                    style={{
-                      width: "20px",
-                      height: "4px",
-                      background: "#0000ff",
-                      borderRadius: "2px",
-                    }}
-                  />
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-1 bg-blue-500 rounded-sm" />
                   <Text>Z-Axis (Blue)</Text>
                 </div>
               </Space>

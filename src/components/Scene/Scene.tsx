@@ -3,7 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, Stats } from "@react-three/drei";
 import RotatingCube from "./RotatingCube";
-// import CoordinateAxes from './CoordinateAxes';
+import CoordinateAxes from "./CoordinateAxes";
 import { Suspense } from "react";
 
 export default function Scene() {
@@ -40,7 +40,7 @@ export default function Scene() {
 
         {/* 3D 객체들 */}
         <RotatingCube />
-        {/* <CoordinateAxes /> */}
+        <CoordinateAxes />
 
         {/* 그리드 */}
         <Grid
