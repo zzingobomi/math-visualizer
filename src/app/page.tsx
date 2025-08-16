@@ -1,146 +1,107 @@
 "use client";
 
-import { Row, Col, Card, Typography, Space } from "antd";
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
-import MatrixInputs from "@/components/UI/MatrixInputs";
-import RPYInputs from "@/components/UI/RPYInputs";
-import EulerInputs from "@/components/UI/EulerInputs";
-import ZYZInputs from "@/components/UI/ZYZInputs";
-import MatrixDisplay from "@/components/UI/MatrixDisplay";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card, Typography, Row, Col, Button } from "antd";
+import {
+  RotateRightOutlined,
+  SettingOutlined,
+  ArrowRightOutlined,
+} from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
-// Three.js 컴포넌트를 dynamic import로 로드 (SSR 방지)
-const Scene = dynamic(() => import("@/components/Scene/Scene"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[600px] flex items-center justify-center bg-gray-900 rounded-lg">
-      <Text>Loading 3D Scene...</Text>
-    </div>
-  ),
-});
+const HomePage = () => {
+  const router = useRouter();
+  const [hovered, setHovered] = useState<string | null>(null);
 
-export default function Home() {
+  const tools = [
+    {
+      id: "rotation",
+      title: "3D Rotation Visualizer",
+      description: "Euler 각, RPY, 회전행렬 시각화",
+      icon: <RotateRightOutlined className="text-2xl" />,
+      color: "bg-blue-500",
+    },
+    {
+      id: "dhparams",
+      title: "DH Parameter Visualizer",
+      description: "DH 매개변수 기구학 시각화",
+      icon: <SettingOutlined className="text-2xl" />,
+      color: "bg-green-500",
+    },
+  ];
+
+  const handleNavigate = (toolId: string) => {
+    router.push(`/${toolId}`);
+  };
+
   return (
-    <div className="p-6 min-h-screen bg-gray-950">
-      <Space direction="vertical" size="large" className="w-full">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-6 py-16">
+      <div className="max-w-6xl mx-auto">
         {/* 헤더 */}
-        <div className="text-center mb-6">
-          <Title level={1} className="text-white mb-2">
-            3D Rotation Visualizer
+        <div className="text-center mb-20">
+          <Title level={1} className="!mb-3 !text-4xl font-bold">
+            로봇공학 스터디 도구
           </Title>
-          <Text type="secondary" className="text-base">
-            Interactive tool for understanding transformation matrices, RPY,
-            Euler angles, and ZYZ rotations
+          <Text className="text-gray-500 text-lg">
+            로봇공학 개념을 직관적으로 이해할 수 있는 시각화 툴 모음
           </Text>
         </div>
 
-        {/* 메인 레이아웃 */}
-        <Row gutter={[24, 24]} className="min-h-[calc(100vh-200px)]">
-          {/* 3D Scene */}
-          <Col xs={24} lg={16} className="min-h-[600px]">
-            <Card
-              title="3D Visualization"
-              className="h-full flex flex-col"
-              bodyStyle={{ flex: 1, padding: "16px" }}
-            >
-              <Suspense
-                fallback={
-                  <div className="h-[600px] flex items-center justify-center">
-                    <Text>Loading...</Text>
+        {/* 카드 그리드 */}
+        <Row gutter={[32, 32]} justify="center">
+          {tools.map((tool) => {
+            const isHovered = hovered === tool.id;
+            return (
+              <Col xs={24} sm={12} md={8} key={tool.id}>
+                <Card
+                  hoverable
+                  bordered={false}
+                  className={`backdrop-blur-lg bg-white/80 rounded-2xl transition-all duration-300 ${
+                    isHovered ? "scale-105 shadow-2xl" : "shadow-md"
+                  }`}
+                  bodyStyle={{ padding: "28px 24px" }}
+                  onClick={() => handleNavigate(tool.id)}
+                  onMouseEnter={() => setHovered(tool.id)}
+                  onMouseLeave={() => setHovered(null)}
+                >
+                  {/* 아이콘 */}
+                  <div
+                    className={`w-14 h-14 mb-5 mx-auto rounded-full flex items-center justify-center text-white ${tool.color} shadow-md`}
+                  >
+                    {tool.icon}
                   </div>
-                }
-              >
-                <Scene />
-              </Suspense>
-            </Card>
-          </Col>
 
-          {/* 컨트롤 패널 */}
-          <Col xs={24} lg={8}>
-            <div className="max-h-[calc(100vh-200px)] overflow-y-auto overflow-x-hidden pr-2">
-              <Space direction="vertical" size="middle" className="w-full">
-                {/* Matrix Display */}
-                <Card
-                  title="Current Rotation Matrix"
-                  size="small"
-                  variant="borderless"
-                >
-                  <MatrixDisplay />
-                </Card>
+                  {/* 타이틀 */}
+                  <Title level={4} className="text-center font-semibold !mb-3">
+                    {tool.title}
+                  </Title>
 
-                {/* Matrix Direct Input */}
-                <Card
-                  title="Transformation Matrix"
-                  size="small"
-                  variant="borderless"
-                >
-                  <MatrixInputs />
-                </Card>
+                  {/* 설명 */}
+                  <Text className="block text-center text-gray-500 mb-8">
+                    {tool.description}
+                  </Text>
 
-                {/* RPY Controls */}
-                <Card title="Roll-Pitch-Yaw" size="small" variant="borderless">
-                  <RPYInputs />
+                  {/* CTA */}
+                  <div className="text-center">
+                    <Button
+                      type="primary"
+                      ghost
+                      icon={<ArrowRightOutlined />}
+                      className="rounded-full px-5"
+                    >
+                      시작하기
+                    </Button>
+                  </div>
                 </Card>
-
-                {/* Euler Controls */}
-                <Card
-                  title="XYZ Euler Angles"
-                  size="small"
-                  variant="borderless"
-                >
-                  <EulerInputs />
-                </Card>
-
-                {/* ZYZ Controls */}
-                <Card
-                  title="ZYZ Euler Angles"
-                  size="small"
-                  variant="borderless"
-                >
-                  <ZYZInputs />
-                </Card>
-              </Space>
-            </div>
-          </Col>
+              </Col>
+            );
+          })}
         </Row>
-
-        {/* 범례/도움말 */}
-        <Row gutter={[24, 24]}>
-          <Col xs={24} md={12}>
-            <Card title="Color Legend" size="small" variant="borderless">
-              <Space direction="vertical" size="small">
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-1 bg-red-500 rounded-sm" />
-                  <Text>X-Axis (Red)</Text>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-1 bg-green-500 rounded-sm" />
-                  <Text>Y-Axis (Green)</Text>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-5 h-1 bg-blue-500 rounded-sm" />
-                  <Text>Z-Axis (Blue)</Text>
-                </div>
-              </Space>
-            </Card>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Card title="Usage Tips" size="small" variant="borderless">
-              <Space direction="vertical" size="small">
-                <Text>• Drag to rotate the camera view</Text>
-                <Text>• Scroll to zoom in/out</Text>
-                <Text>
-                  • Adjust any rotation values to see real-time updates
-                </Text>
-                <Text>• Compare different rotation representations</Text>
-              </Space>
-            </Card>
-          </Col>
-        </Row>
-      </Space>
+      </div>
     </div>
   );
-}
+};
+
+export default HomePage;
