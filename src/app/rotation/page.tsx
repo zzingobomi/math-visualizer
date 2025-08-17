@@ -12,7 +12,7 @@ import MatrixDisplay from "@/components/Rotation/UI/MatrixDisplay";
 const { Title, Text } = Typography;
 
 // Three.js 컴포넌트를 dynamic import로 로드 (SSR 방지)
-const Scene = dynamic(() => import("@/components/Rotation/Scene"), {
+const Scene = dynamic(() => import("@/components/Rotation/3D/Scene"), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] flex items-center justify-center bg-gray-900 rounded-lg">
