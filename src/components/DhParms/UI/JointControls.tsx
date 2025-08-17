@@ -47,10 +47,7 @@ export const JointControls: React.FC = React.memo(() => {
       </div>
 
       {joints.map((joint) => (
-        <div
-          key={joint.id}
-          className="p-4 border border-gray-200 rounded-lg bg-gray-50"
-        >
+        <div key={joint.id} className="p-4 border rounded-lg">
           <Text strong className="block mb-3">
             관절 {joint.id}
           </Text>

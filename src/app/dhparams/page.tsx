@@ -28,7 +28,7 @@ export default function DHParameterVisualizer() {
   const forwardKinematics = useForwardKinematics(joints, convention);
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
+    <div className="p-6 min-h-screen">
       <Space direction="vertical" size="large" className="w-full">
         {/* 헤더 */}
         <header className="text-center mb-6">

@@ -35,11 +35,7 @@ const MatrixRenderer: React.FC<{
   const matrixArray = useMemo(() => matrix.toArray(), [matrix]);
 
   return (
-    <div
-      className={
-        highlighted ? "p-3 bg-blue-50 border border-blue-200 rounded-lg" : ""
-      }
-    >
+    <div className={highlighted ? "p-3 border rounded-lg" : ""}>
       <Text
         strong
         style={{ fontSize: "12px", marginBottom: "8px", display: "block" }}
