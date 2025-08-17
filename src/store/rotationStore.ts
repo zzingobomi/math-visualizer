@@ -5,7 +5,6 @@ import {
   RPYAngles,
   EulerAngles,
   ZYZAngles,
-  RotationSource,
 } from "@/types/rotation";
 
 interface RotationStore {
@@ -26,16 +25,11 @@ interface RotationStore {
 }
 
 const initialState = {
+  // prettier-ignore
   matrix: {
-    m11: 1,
-    m12: 0,
-    m13: 0,
-    m21: 0,
-    m22: 1,
-    m23: 0,
-    m31: 0,
-    m32: 0,
-    m33: 1,
+    m11: 1, m12: 0, m13: 0,
+    m21: 0, m22: 1, m23: 0,
+    m31: 0, m32: 0, m33: 1,
   },
   rpy: { roll: 0, pitch: 0, yaw: 0 },
   euler: { x: 0, y: 0, z: 0, type: "intrinsic" as const },
@@ -52,23 +46,12 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
 
     set({ isUpdating: true });
 
+    // prettier-ignore
     const mat4 = new THREE.Matrix4().set(
-      matrix.m11,
-      matrix.m12,
-      matrix.m13,
-      0,
-      matrix.m21,
-      matrix.m22,
-      matrix.m23,
-      0,
-      matrix.m31,
-      matrix.m32,
-      matrix.m33,
-      0,
-      0,
-      0,
-      0,
-      1
+      matrix.m11, matrix.m12, matrix.m13, 0,
+      matrix.m21, matrix.m22, matrix.m23, 0,
+      matrix.m31, matrix.m32, matrix.m33, 0,
+      0,          0,          0,          1
     );
 
     // Matrix에서 다른 표현들 계산
@@ -184,16 +167,11 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
 // 유틸리티 함수들
 function matrix4ToMatrix(mat4: THREE.Matrix4): RotationMatrix {
   const m = mat4.elements;
+  // prettier-ignore
   return {
-    m11: m[0],
-    m12: m[4],
-    m13: m[8],
-    m21: m[1],
-    m22: m[5],
-    m23: m[9],
-    m31: m[2],
-    m32: m[6],
-    m33: m[10],
+    m11: m[0], m12: m[4], m13: m[8],
+    m21: m[1], m22: m[5], m23: m[9],
+    m31: m[2], m32: m[6], m33: m[10],
   };
 }
 
@@ -234,22 +212,11 @@ function zyzToMatrix4(zyz: ZYZAngles): THREE.Matrix4 {
   const c3 = Math.cos(psi),
     s3 = Math.sin(psi);
 
+  // prettier-ignore
   return new THREE.Matrix4().set(
-    c1 * c2 * c3 - s1 * s3,
-    -c1 * c2 * s3 - s1 * c3,
-    c1 * s2,
-    0,
-    s1 * c2 * c3 + c1 * s3,
-    -s1 * c2 * s3 + c1 * c3,
-    s1 * s2,
-    0,
-    -s2 * c3,
-    s2 * s3,
-    c2,
-    0,
-    0,
-    0,
-    0,
-    1
+    c1 * c2 * c3 - s1 * s3,    -c1 * c2 * s3 - s1 * c3,    c1 * s2,    0,
+    s1 * c2 * c3 + c1 * s3,    -s1 * c2 * s3 + c1 * c3,    s1 * s2,    0,
+    -s2 * c3,                   s2 * s3,                   c2,         0,
+    0,                          0,                         0,          1
   );
 }

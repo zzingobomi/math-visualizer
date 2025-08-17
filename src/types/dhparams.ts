@@ -24,20 +24,22 @@ export const calculateTransformMatrix = (
   const sa = Math.sin(alphaRad);
 
   if (isModified) {
+    // prettier-ignore
     // Modified DH Parameters
     return math.matrix([
-      [ct, -st, 0, a],
-      [st * ca, ct * ca, -sa, -sa * d],
-      [st * sa, ct * sa, ca, ca * d],
-      [0, 0, 0, 1],
+      [ ct,      -st,      0,       a       ],
+      [ st * ca,  ct * ca, -sa,    -sa * d  ],
+      [ st * sa,  ct * sa,  ca,     ca * d  ],
+      [ 0,        0,       0,       1       ],
     ]);
   } else {
+    // prettier-ignore
     // Standard DH Parameters
     return math.matrix([
-      [ct, -st * ca, st * sa, a * ct],
-      [st, ct * ca, -ct * sa, a * st],
-      [0, sa, ca, d],
-      [0, 0, 0, 1],
+      [ ct,  -st * ca,   st * sa,   a * ct ],
+      [ st,   ct * ca,  -ct * sa,   a * st ],
+      [ 0,     sa,        ca,       d      ],
+      [ 0,     0,         0,        1      ],
     ]);
   }
 };
