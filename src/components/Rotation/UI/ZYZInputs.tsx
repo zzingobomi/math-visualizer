@@ -2,7 +2,7 @@
 
 import { Space, Slider, InputNumber, Button, Typography, Row, Col } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
-import { useRotationStore } from "@/store/rotationStore";
+import { useRotationStore } from "@/stores/rotationStore";
 
 const { Text } = Typography;
 

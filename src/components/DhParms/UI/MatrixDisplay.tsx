@@ -1,93 +1,98 @@
-"use client";
-
+import React, { useMemo } from "react";
 import { Typography, Space, Divider } from "antd";
+import { ForwardKinematicsResult, Matrix4 } from "@/types/dhparams";
 
 const { Text } = Typography;
 
-export const MatrixDisplay = ({ matrices }) => {
-  const formatNumber = (num) => num.toFixed(3).padStart(7, " ");
+interface MatrixDisplayProps {
+  matrices: ForwardKinematicsResult;
+}
+
+const MATRIX_STYLES = {
+  container: {
+    fontFamily: 'Monaco, Consolas, "Courier New", monospace',
+    fontSize: "11px",
+    backgroundColor: "#0a0a0a",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "1px solid #434343",
+  },
+  bracket: {
+    individual: "#ff6b6b",
+    final: "#4096ff",
+  },
+  text: "#ffffff",
+} as const;
+
+const MatrixRenderer: React.FC<{
+  matrix: Matrix4;
+  bracketColor: string;
+  title: string;
+  highlighted?: boolean;
+}> = React.memo(({ matrix, bracketColor, title, highlighted = false }) => {
+  const formatNumber = (num: number): string => num.toFixed(3).padStart(7, " ");
+
+  const matrixArray = useMemo(() => matrix.toArray(), [matrix]);
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-      {/* Individual Matrices */}
-      {matrices.individual.map((matrix, index) => (
-        <div key={index}>
-          <Text
-            strong
-            style={{ fontSize: "12px", marginBottom: "8px", display: "block" }}
-          >
-            T{index}_{index + 1}
-          </Text>
-          <div
-            style={{
-              fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-              fontSize: "11px",
-              backgroundColor: "#0a0a0a",
-              padding: "12px",
-              borderRadius: "6px",
-              border: "1px solid #434343",
-            }}
-          >
-            <Space direction="vertical" size={2} style={{ width: "100%" }}>
-              {matrix.toArray().map((row, i) => (
-                <div key={i}>
-                  <Text code style={{ color: "#ff6b6b" }}>
-                    {i === 0 ? "┌" : i === 3 ? "└" : "│"}
-                  </Text>
-                  {row.map((val, j) => (
-                    <Text key={j} code style={{ color: "#ffffff" }}>
-                      {formatNumber(val)}
-                    </Text>
-                  ))}
-                  <Text code style={{ color: "#ff6b6b" }}>
-                    {i === 0 ? "┐" : i === 3 ? "┘" : "│"}
-                  </Text>
-                </div>
+    <div
+      className={
+        highlighted ? "p-3 bg-blue-50 border border-blue-200 rounded-lg" : ""
+      }
+    >
+      <Text
+        strong
+        style={{ fontSize: "12px", marginBottom: "8px", display: "block" }}
+      >
+        {title}
+      </Text>
+      <div style={MATRIX_STYLES.container}>
+        <Space direction="vertical" size={2} style={{ width: "100%" }}>
+          {matrixArray.map((row, i) => (
+            <div key={i}>
+              <Text code style={{ color: bracketColor }}>
+                {i === 0 ? "┌" : i === 3 ? "└" : "│"}
+              </Text>
+              {(row as number[]).map((val, j) => (
+                <Text key={j} code style={{ color: MATRIX_STYLES.text }}>
+                  {formatNumber(val)}
+                </Text>
               ))}
-            </Space>
-          </div>
-        </div>
-      ))}
-
-      <Divider />
-
-      {/* Final Matrix */}
-      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <Text
-          strong
-          style={{ fontSize: "12px", marginBottom: "8px", display: "block" }}
-        >
-          최종 변환 T0_{matrices.individual.length}
-        </Text>
-        <div
-          style={{
-            fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-            fontSize: "11px",
-            backgroundColor: "#0a0a0a",
-            padding: "12px",
-            borderRadius: "6px",
-            border: "1px solid #434343",
-          }}
-        >
-          <Space direction="vertical" size={2} style={{ width: "100%" }}>
-            {matrices.final.toArray().map((row, i) => (
-              <div key={i}>
-                <Text code style={{ color: "#4096ff" }}>
-                  {i === 0 ? "┌" : i === 3 ? "└" : "│"}
-                </Text>
-                {row.map((val, j) => (
-                  <Text key={j} code style={{ color: "#ffffff" }}>
-                    {formatNumber(val)}
-                  </Text>
-                ))}
-                <Text code style={{ color: "#4096ff" }}>
-                  {i === 0 ? "┐" : i === 3 ? "┘" : "│"}
-                </Text>
-              </div>
-            ))}
-          </Space>
-        </div>
+              <Text code style={{ color: bracketColor }}>
+                {i === 0 ? "┐" : i === 3 ? "┘" : "│"}
+              </Text>
+            </div>
+          ))}
+        </Space>
       </div>
-    </Space>
+    </div>
   );
-};
+});
+
+export const MatrixDisplay: React.FC<MatrixDisplayProps> = React.memo(
+  ({ matrices }) => {
+    return (
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        {/* Individual Matrices */}
+        {matrices.individual.map((matrix, index) => (
+          <MatrixRenderer
+            key={index}
+            matrix={matrix}
+            bracketColor={MATRIX_STYLES.bracket.individual}
+            title={`T${index}_{index + 1}`}
+          />
+        ))}
+
+        <Divider />
+
+        {/* Final Matrix */}
+        <MatrixRenderer
+          matrix={matrices.final}
+          bracketColor={MATRIX_STYLES.bracket.final}
+          title={`최종 변환 T0_${matrices.individual.length}`}
+          highlighted
+        />
+      </Space>
+    );
+  }
+);

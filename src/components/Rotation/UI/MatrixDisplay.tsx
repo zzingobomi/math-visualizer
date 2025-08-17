@@ -1,7 +1,7 @@
 "use client";
 
 import { Typography, Space } from "antd";
-import { useRotationStore } from "@/store/rotationStore";
+import { useRotationStore } from "@/stores/rotationStore";
 
 const { Text } = Typography;
 

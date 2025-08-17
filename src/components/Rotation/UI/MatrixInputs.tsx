@@ -2,7 +2,7 @@
 
 import { Row, Col, InputNumber, Button, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
-import { useRotationStore } from "@/store/rotationStore";
+import { useRotationStore } from "@/stores/rotationStore";
 
 const { Text } = Typography;
 
