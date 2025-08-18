@@ -1,4 +1,4 @@
-import * as math from "mathjs";
+import { matrix, Matrix } from "mathjs";
 
 // DH 파라미터 타입 정의
 export interface DHParams {
@@ -13,9 +13,9 @@ export interface DHParams {
 export type DHConvention = "standard" | "modified";
 
 // Matrix 관련 타입
-export type Matrix4 = math.Matrix;
+export type Matrix4 = Matrix;
 export type Vector3Tuple = [number, number, number];
-export type Matrix3x3 = number[][];
+export type Matrix3x3 = Matrix;
 
 // Forward Kinematics 결과 타입
 export interface ForwardKinematicsResult {
@@ -85,7 +85,7 @@ export const calculateTransformMatrix = (
   if (isModified) {
     // prettier-ignore
     // Modified DH Parameters
-    return math.matrix([
+    return matrix([
       [ ct,      -st,      0,       a       ],
       [ st * ca,  ct * ca, -sa,    -sa * d  ],
       [ st * sa,  ct * sa,  ca,     ca * d  ],
@@ -94,7 +94,7 @@ export const calculateTransformMatrix = (
   } else {
     // prettier-ignore
     // Standard DH Parameters
-    return math.matrix([
+    return matrix([
       [ ct,  -st * ca,   st * sa,   a * ct ],
       [ st,   ct * ca,  -ct * sa,   a * st ],
       [ 0,     sa,        ca,       d      ],

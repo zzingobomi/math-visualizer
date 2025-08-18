@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Billboard, Text } from "@react-three/drei";
-import * as THREE from "three";
+import { MathNumericType } from "mathjs";
+import { Matrix4, Vector3 } from "three";
 import { Vector3Tuple, Matrix3x3 } from "@/types/dhparams";
 
 interface CoordinateFrameProps {
@@ -22,15 +23,36 @@ const AXIS_CONFIG = {
   coneHeight: 0.15,
 } as const;
 
-export const CoordinateFrame: React.FC<CoordinateFrameProps> = React.memo(
-  ({ position, scale = 1, rotation, label }) => {
-    const rotationMatrix = rotation
-      ? new THREE.Matrix4().makeBasis(
-          new THREE.Vector3(rotation[0][0], rotation[1][0], rotation[2][0]),
-          new THREE.Vector3(rotation[0][1], rotation[1][1], rotation[2][1]),
-          new THREE.Vector3(rotation[0][2], rotation[1][2], rotation[2][2])
-        )
-      : new THREE.Matrix4().identity();
+// mathjs 타입 안전하게 number로 변환
+function toNumber(val: MathNumericType): number {
+  if (typeof val === "number") return val;
+  if (typeof val === "bigint") return Number(val);
+  return (val as any).valueOf();
+}
+
+export const CoordinateFrame = React.memo(
+  ({ position, scale = 1, rotation, label }: CoordinateFrameProps) => {
+    const rotationMatrix = useMemo(() => {
+      if (!rotation) return new Matrix4().identity();
+
+      const x = new Vector3(
+        toNumber(rotation.get([0, 0])),
+        toNumber(rotation.get([1, 0])),
+        toNumber(rotation.get([2, 0]))
+      );
+      const y = new Vector3(
+        toNumber(rotation.get([0, 1])),
+        toNumber(rotation.get([1, 1])),
+        toNumber(rotation.get([2, 1]))
+      );
+      const z = new Vector3(
+        toNumber(rotation.get([0, 2])),
+        toNumber(rotation.get([1, 2])),
+        toNumber(rotation.get([2, 2]))
+      );
+
+      return new Matrix4().makeBasis(x, y, z);
+    }, [rotation]);
 
     const axisRadius = AXIS_CONFIG.radius * scale;
     const coneRadius = AXIS_CONFIG.coneRadius * scale;
@@ -39,7 +61,7 @@ export const CoordinateFrame: React.FC<CoordinateFrameProps> = React.memo(
     return (
       <group position={position}>
         <group matrix={rotationMatrix} matrixAutoUpdate={false}>
-          {/* X축 - 빨강 */}
+          {/* X축 */}
           <mesh position={[scale / 2, 0, 0]} rotation={[0, 0, -Math.PI / 2]}>
             <cylinderGeometry args={[axisRadius, axisRadius, scale, 8]} />
             <meshStandardMaterial color={AXIS_COLORS.x} />
@@ -49,7 +71,7 @@ export const CoordinateFrame: React.FC<CoordinateFrameProps> = React.memo(
             <meshStandardMaterial color={AXIS_COLORS.x} />
           </mesh>
 
-          {/* Y축 - 초록 */}
+          {/* Y축 */}
           <mesh position={[0, scale / 2, 0]}>
             <cylinderGeometry args={[axisRadius, axisRadius, scale, 8]} />
             <meshStandardMaterial color={AXIS_COLORS.y} />
@@ -59,7 +81,7 @@ export const CoordinateFrame: React.FC<CoordinateFrameProps> = React.memo(
             <meshStandardMaterial color={AXIS_COLORS.y} />
           </mesh>
 
-          {/* Z축 - 파랑 */}
+          {/* Z축 */}
           <mesh position={[0, 0, scale / 2]} rotation={[Math.PI / 2, 0, 0]}>
             <cylinderGeometry args={[axisRadius, axisRadius, scale, 8]} />
             <meshStandardMaterial color={AXIS_COLORS.z} />
@@ -75,7 +97,7 @@ export const CoordinateFrame: React.FC<CoordinateFrameProps> = React.memo(
           <Billboard>
             <Text
               position={[0, scale + 0.3, 0]}
-              fontSize={0.2}
+              fontSize={0.2 * scale}
               color="#333"
               anchorX="center"
               anchorY="middle"

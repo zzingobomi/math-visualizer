@@ -5,7 +5,6 @@ interface DHParameterStore {
   joints: DHParams[];
   convention: DHConvention;
 
-  // Actions
   setConvention: (convention: DHConvention) => void;
   updateJoint: (
     id: string,

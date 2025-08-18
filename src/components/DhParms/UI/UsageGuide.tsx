@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Space, Typography } from "antd";
 
 const { Text } = Typography;
@@ -10,12 +9,14 @@ const USAGE_TIPS = [
   "• 실시간 변환 행렬 계산 확인",
 ] as const;
 
-export const UsageGuide: React.FC = React.memo(() => (
-  <Card title="사용 방법" size="small" variant="borderless">
-    <Space direction="vertical" size="small">
-      {USAGE_TIPS.map((tip) => (
-        <Text key={tip}>{tip}</Text>
-      ))}
-    </Space>
-  </Card>
-));
+export default function UsageGuide() {
+  return (
+    <Card title="사용 방법" size="small" variant="borderless">
+      <Space direction="vertical" size="small">
+        {USAGE_TIPS.map((tip) => (
+          <Text key={tip}>{tip}</Text>
+        ))}
+      </Space>
+    </Card>
+  );
+}

@@ -1,8 +1,7 @@
-import React from "react";
 import { Space, Button, Typography } from "antd";
 import { PlusOutlined, MinusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useDHParameterStore } from "@/stores/dhParameterStore";
-import { ParameterSlider } from "@/components/common/ParameterSlider";
+import { ParameterSlider } from "@/components/DhParms/UI/ParameterSlider";
 import { DH_PARAM_CONFIGS } from "@/types/dhparams";
 
 const { Text } = Typography;
@@ -14,12 +13,12 @@ const PARAMETER_LABELS = {
   alpha: "α 비틀림",
 } as const;
 
-export const JointControls: React.FC = React.memo(() => {
+export default function JointControls() {
   const { joints, addJoint, removeJoint, resetJoints, updateJoint } =
     useDHParameterStore();
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space direction="vertical" size="middle" className="w-full">
       <div className="flex justify-between items-center">
         <Text strong>관절 제어 ({joints.length}개)</Text>
         <Space>
@@ -70,4 +69,4 @@ export const JointControls: React.FC = React.memo(() => {
       ))}
     </Space>
   );
-});
+}

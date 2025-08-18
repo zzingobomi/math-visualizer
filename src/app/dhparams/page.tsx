@@ -1,28 +1,18 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { Row, Col, Card, Typography, Space, Spin } from "antd";
+import { Row, Col, Card, Typography, Space } from "antd";
 import { useDHParameterStore } from "@/stores/dhParameterStore";
 import { useForwardKinematics } from "@/hooks/useForwardKinematics";
 import { Scene } from "@/components/DhParms/3D/Scene";
-import { JointControls } from "@/components/DhParms/UI/JointControls";
 import { MatrixDisplay } from "@/components/DhParms/UI/MatrixDisplay";
-import { DHConventionSelector } from "@/components/DhParms/UI/DHConventionSelector";
-import { ColorLegend } from "@/components/DhParms/UI/ColorLegend";
-import { UsageGuide } from "@/components/DhParms/UI/UsageGuide";
+import ColorLegend from "@/components/DhParms/UI/ColorLegend";
+import DHConventionSelector from "@/components/DhParms/UI/DHConventionSelector";
+import JointControls from "@/components/DhParms/UI/JointControls";
+import UsageGuide from "@/components/DhParms/UI/UsageGuide";
 
 const { Title, Text } = Typography;
 
-// 로딩 컴포넌트
-const SceneLoader: React.FC = () => (
-  <div className="h-[600px] bg-gray-900 rounded-lg flex items-center justify-center">
-    <Spin size="large" />
-  </div>
-);
-
-// 메인 컴포넌트
 export default function DHParameterVisualizer() {
   const { joints, convention } = useDHParameterStore();
   const forwardKinematics = useForwardKinematics(joints, convention);
@@ -45,18 +35,21 @@ export default function DHParameterVisualizer() {
           {/* 3D Scene */}
           <Col xs={24} lg={16} className="min-h-[600px]">
             <Card
-              title="3D 시각화"
+              title="3D Visualization"
               className="h-full flex flex-col"
-              bodyStyle={{ flex: 1, padding: "16px" }}
+              classNames={{
+                body: "flex-1 p-0",
+              }}
             >
-              <div className="h-[600px] bg-gray-900 rounded-lg">
-                <Suspense fallback={<SceneLoader />}>
-                  <Canvas camera={{ position: [5, 5, 5], fov: 60 }}>
-                    <Scene />
-                    <OrbitControls enablePan enableZoom enableRotate />
-                  </Canvas>
-                </Suspense>
-              </div>
+              <Suspense
+                fallback={
+                  <div className="h-full flex items-center justify-center">
+                    <Text>Loading...</Text>
+                  </div>
+                }
+              >
+                <Scene />
+              </Suspense>
             </Card>
           </Col>
 

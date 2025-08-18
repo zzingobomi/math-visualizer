@@ -11,8 +11,8 @@ interface ParameterSliderProps {
   onChange: (value: number | null) => void;
 }
 
-export const ParameterSlider: React.FC<ParameterSliderProps> = React.memo(
-  ({ label, value, config, onChange }) => {
+export const ParameterSlider = React.memo(
+  ({ label, value, config, onChange }: ParameterSliderProps) => {
     const { min, max, step, precision, unit, color } = config;
 
     const handleChange = (newValue: number | null) => {
@@ -23,11 +23,7 @@ export const ParameterSlider: React.FC<ParameterSliderProps> = React.memo(
 
     return (
       <div className="mb-4">
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
+        <Row justify="space-between" align="middle" className="mb-2">
           <Text strong style={{ color }}>
             {label}
           </Text>
@@ -39,7 +35,7 @@ export const ParameterSlider: React.FC<ParameterSliderProps> = React.memo(
             step={step}
             precision={precision}
             onChange={handleChange}
-            style={{ width: "80px" }}
+            className="w-24"
             addonAfter={unit}
           />
         </Row>
@@ -49,8 +45,10 @@ export const ParameterSlider: React.FC<ParameterSliderProps> = React.memo(
           max={max}
           step={step}
           onChange={handleChange}
-          trackStyle={{ backgroundColor: color }}
-          handleStyle={{ borderColor: color }}
+          styles={{
+            track: { backgroundColor: color },
+            handle: { borderColor: color },
+          }}
         />
       </div>
     );
