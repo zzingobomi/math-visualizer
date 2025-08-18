@@ -68,8 +68,7 @@ export default function CoordinateAxes() {
         fontSize={0.5}
         color="#ff0000"
         anchorX="center"
-        anchorY="middle"
-        font="/fonts/inter-bold.woff"
+        anchorY="middle"        
       >
         X
       </Text>
@@ -79,8 +78,7 @@ export default function CoordinateAxes() {
         fontSize={0.5}
         color="#00ff00"
         anchorX="center"
-        anchorY="middle"
-        font="/fonts/inter-bold.woff"
+        anchorY="middle"        
       >
         Y
       </Text>
@@ -90,8 +88,7 @@ export default function CoordinateAxes() {
         fontSize={0.5}
         color="#0000ff"
         anchorX="center"
-        anchorY="middle"
-        font="/fonts/inter-bold.woff"
+        anchorY="middle"        
       >
         Z
       </Text>

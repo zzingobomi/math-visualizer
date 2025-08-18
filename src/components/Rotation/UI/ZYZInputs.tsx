@@ -21,15 +21,11 @@ export default function ZYZInputs() {
   };
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space direction="vertical" size="middle" className="w-full">
       {/* Phi (첫 번째 Z 회전) */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#1890ff" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-blue-500">
             φ (첫 번째 Z)
           </Text>
           <InputNumber
@@ -50,19 +46,17 @@ export default function ZYZInputs() {
           max={180}
           step={1}
           onChange={(value) => handleZYZChange("phi", value)}
-          trackStyle={{ backgroundColor: "#1890ff" }}
-          handleStyle={{ borderColor: "#1890ff" }}
+          styles={{
+            track: { backgroundColor: "#1890ff" },
+            handle: { borderColor: "#1890ff" },
+          }}
         />
       </div>
 
       {/* Theta (Y 회전) */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#52c41a" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-green-500">
             θ (Y축)
           </Text>
           <InputNumber
@@ -83,19 +77,17 @@ export default function ZYZInputs() {
           max={180}
           step={1}
           onChange={(value) => handleZYZChange("theta", value)}
-          trackStyle={{ backgroundColor: "#52c41a" }}
-          handleStyle={{ borderColor: "#52c41a" }}
+          styles={{
+            track: { backgroundColor: "#52c41a" },
+            handle: { borderColor: "#52c41a" },
+          }}
         />
       </div>
 
       {/* Psi (두 번째 Z 회전) */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#722ed1" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-purple-500">
             ψ (두 번째 Z)
           </Text>
           <InputNumber
@@ -116,8 +108,10 @@ export default function ZYZInputs() {
           max={180}
           step={1}
           onChange={(value) => handleZYZChange("psi", value)}
-          trackStyle={{ backgroundColor: "#722ed1" }}
-          handleStyle={{ borderColor: "#722ed1" }}
+          styles={{
+            track: { backgroundColor: "#722ed1" },
+            handle: { borderColor: "#722ed1" },
+          }}
         />
       </div>
 
@@ -133,7 +127,7 @@ export default function ZYZInputs() {
       </Button>
 
       <div>
-        <Text type="secondary" style={{ fontSize: "12px" }}>
+        <Text type="secondary" className="text-xs">
           <strong>ZYZ:</strong> Z→Y→Z 순서로 회전
           <br />
           θ (theta)는 0~180도 범위입니다

@@ -14,7 +14,7 @@ const { Title, Text } = Typography;
 const HomePage = () => {
   const router = useRouter();
   const [hovered, setHovered] = useState<string | null>(null);
-  const [loadingTool, setLoadingTool] = useState<string | null>(null); // 추가
+  const [loadingTool, setLoadingTool] = useState<string | null>(null);
 
   const tools = [
     {
@@ -58,11 +58,10 @@ const HomePage = () => {
               <Col xs={24} sm={12} md={8} key={tool.id}>
                 <Card
                   hoverable
-                  bordered={false}
-                  className={`backdrop-blur-lg bg-white/80 rounded-2xl transition-all duration-300 ${
+                  variant="borderless"
+                  className={`backdrop-blur-lg bg-white/80 rounded-2xl transition-all duration-300 px-6 py-7 ${
                     isHovered ? "scale-105 shadow-2xl" : "shadow-md"
-                  }`}
-                  bodyStyle={{ padding: "28px 24px" }}
+                  }`}                  
                   onClick={() => handleNavigate(tool.id)}
                   onMouseEnter={() => setHovered(tool.id)}
                   onMouseLeave={() => setHovered(null)}
@@ -87,8 +86,8 @@ const HomePage = () => {
                       ghost
                       icon={<ArrowRightOutlined />}
                       className="rounded-full px-5"
-                      loading={isLoading} // 버튼에 스피너 표시
-                      disabled={isLoading} // 중복 클릭 방지
+                      loading={isLoading}
+                      disabled={isLoading}
                     >
                       {isLoading ? "로딩중..." : "시작하기"}
                     </Button>

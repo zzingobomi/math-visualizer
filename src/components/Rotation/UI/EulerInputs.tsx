@@ -7,7 +7,6 @@ import {
   Button,
   Typography,
   Row,
-  Col,
   Radio,
 } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
@@ -20,7 +19,6 @@ export default function EulerInputs() {
 
   const handleEulerChange = (key: keyof typeof euler, value: any) => {
     if (key !== "type" && value === null) return;
-
     const newEuler = { ...euler, [key]: value };
     updateFromEuler(newEuler);
   };
@@ -30,10 +28,10 @@ export default function EulerInputs() {
   };
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space direction="vertical" size="middle" className="w-full">
       {/* Type Selection */}
       <div>
-        <Text strong style={{ marginBottom: "8px", display: "block" }}>
+        <Text strong className="block mb-2">
           회전 순서
         </Text>
         <Radio.Group
@@ -48,12 +46,8 @@ export default function EulerInputs() {
 
       {/* X Rotation */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#ff4d4f" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-red-500">
             X 회전
           </Text>
           <InputNumber
@@ -64,7 +58,7 @@ export default function EulerInputs() {
             step={1}
             precision={1}
             onChange={(value) => handleEulerChange("x", value)}
-            style={{ width: "80px" }}
+            className="w-20"
             addonAfter="°"
           />
         </Row>
@@ -74,19 +68,17 @@ export default function EulerInputs() {
           max={180}
           step={1}
           onChange={(value) => handleEulerChange("x", value)}
-          trackStyle={{ backgroundColor: "#ff4d4f" }}
-          handleStyle={{ borderColor: "#ff4d4f" }}
+          styles={{
+            track: { backgroundColor: "#ff4d4f" },
+            handle: { borderColor: "#ff4d4f" }, // FIXME: border color 가 적용이 안되는거 같은데..
+          }}
         />
       </div>
 
       {/* Y Rotation */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#52c41a" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-green-500">
             Y 회전
           </Text>
           <InputNumber
@@ -97,7 +89,7 @@ export default function EulerInputs() {
             step={1}
             precision={1}
             onChange={(value) => handleEulerChange("y", value)}
-            style={{ width: "80px" }}
+            className="w-20"
             addonAfter="°"
           />
         </Row>
@@ -107,19 +99,17 @@ export default function EulerInputs() {
           max={180}
           step={1}
           onChange={(value) => handleEulerChange("y", value)}
-          trackStyle={{ backgroundColor: "#52c41a" }}
-          handleStyle={{ borderColor: "#52c41a" }}
+          styles={{
+            track: { backgroundColor: "#52c41a" },
+            handle: { borderColor: "#52c41a" },
+          }}
         />
       </div>
 
       {/* Z Rotation */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#1890ff" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-blue-500">
             Z 회전
           </Text>
           <InputNumber
@@ -130,7 +120,7 @@ export default function EulerInputs() {
             step={1}
             precision={1}
             onChange={(value) => handleEulerChange("z", value)}
-            style={{ width: "80px" }}
+            className="w-20"
             addonAfter="°"
           />
         </Row>
@@ -140,8 +130,10 @@ export default function EulerInputs() {
           max={180}
           step={1}
           onChange={(value) => handleEulerChange("z", value)}
-          trackStyle={{ backgroundColor: "#1890ff" }}
-          handleStyle={{ borderColor: "#1890ff" }}
+          styles={{
+            track: { backgroundColor: "#1890ff" },
+            handle: { borderColor: "#1890ff" },
+          }}
         />
       </div>
 
@@ -157,10 +149,10 @@ export default function EulerInputs() {
       </Button>
 
       <div>
-        <Text type="secondary" style={{ fontSize: "12px" }}>
-          <strong>Intrinsic:</strong> 고정 좌표축 기준 X→Y→Z 순서
+        <Text type="secondary" className="text-xs">
+          <strong>Intrinsic:</strong> 물체 좌표축(local) 기준 X→Y→Z 순서
           <br />
-          <strong>Extrinsic:</strong> 회전 좌표축 기준 Z→Y→X 순서
+          <strong>Extrinsic:</strong> 고정 좌표축(world) 기준 Z→Y→X 순서
         </Text>
       </div>
     </Space>

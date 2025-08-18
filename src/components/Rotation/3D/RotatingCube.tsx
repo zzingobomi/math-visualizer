@@ -1,9 +1,10 @@
 "use client";
+
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { BoxGeometry, Mesh, Color, BufferAttribute } from "three";
-import * as THREE from "three";
 import { useRotationStore } from "@/stores/rotationStore";
+
 
 export default function RotatingCube() {
   const meshRef = useRef<Mesh>(null);
@@ -43,7 +44,7 @@ export default function RotatingCube() {
       }
     }
 
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute("color", new BufferAttribute(colors, 3));
     return geometry;
   }, []);
 

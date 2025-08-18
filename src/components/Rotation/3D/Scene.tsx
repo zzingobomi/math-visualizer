@@ -1,10 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, Stats } from "@react-three/drei";
 import RotatingCube from "./RotatingCube";
 import CoordinateAxes from "./CoordinateAxes";
-import { Suspense } from "react";
 
 export default function Scene() {
   return (
@@ -14,17 +14,13 @@ export default function Scene() {
         fov: 60,
         near: 0.1,
         far: 1000,
-      }}
-      style={{
-        height: "600px",
-        background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
-        borderRadius: "8px",
-      }}
+      }}      
       gl={{
         antialias: true,
         alpha: false,
         powerPreference: "high-performance",
       }}
+      className="h-[600px] bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-lg"
     >
       <Suspense fallback={null}>
         {/* 조명 설정 */}
@@ -64,8 +60,7 @@ export default function Scene() {
           minDistance={3}
           maxPolarAngle={Math.PI / 2 + 0.3}
         />
-
-        {/* 개발용 Stats (프로덕션에서는 제거) */}
+        
         {process.env.NODE_ENV === "development" && <Stats />}
       </Suspense>
     </Canvas>

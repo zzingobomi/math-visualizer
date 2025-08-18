@@ -1,13 +1,13 @@
 "use client";
 
-import { Space, Slider, InputNumber, Button, Typography, Row, Col } from "antd";
+import { Space, Slider, InputNumber, Button, Typography, Row } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useRotationStore } from "@/stores/rotationStore";
 
 const { Text } = Typography;
 
 export default function RPYInputs() {
-  const { rpy, updateFromRPY, reset } = useRotationStore();
+  const { rpy, updateFromRPY } = useRotationStore();
 
   const handleRPYChange = (key: keyof typeof rpy, value: number | null) => {
     if (value === null) return;
@@ -21,15 +21,11 @@ export default function RPYInputs() {
   };
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <Space direction="vertical" size="middle" className="w-full">
       {/* Roll */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#ff4d4f" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-red-500">
             Roll (X축)
           </Text>
           <InputNumber
@@ -50,19 +46,17 @@ export default function RPYInputs() {
           max={180}
           step={1}
           onChange={(value) => handleRPYChange("roll", value)}
-          trackStyle={{ backgroundColor: "#ff4d4f" }}
-          handleStyle={{ borderColor: "#ff4d4f" }}
+          styles={{
+            track: { backgroundColor: "#ff4d4f" },
+            handle: { borderColor: "#ff4d4f" },
+          }}
         />
       </div>
 
       {/* Pitch */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#52c41a" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-green-500">
             Pitch (Y축)
           </Text>
           <InputNumber
@@ -83,19 +77,17 @@ export default function RPYInputs() {
           max={180}
           step={1}
           onChange={(value) => handleRPYChange("pitch", value)}
-          trackStyle={{ backgroundColor: "#52c41a" }}
-          handleStyle={{ borderColor: "#52c41a" }}
+          styles={{
+            track: { backgroundColor: "#52c41a" },
+            handle: { borderColor: "#52c41a" },
+          }}
         />
       </div>
 
       {/* Yaw */}
       <div>
-        <Row
-          justify="space-between"
-          align="middle"
-          style={{ marginBottom: "8px" }}
-        >
-          <Text strong style={{ color: "#1890ff" }}>
+        <Row justify="space-between" align="middle" className="mb-2">
+          <Text strong className="text-blue-500">
             Yaw (Z축)
           </Text>
           <InputNumber
@@ -116,8 +108,10 @@ export default function RPYInputs() {
           max={180}
           step={1}
           onChange={(value) => handleRPYChange("yaw", value)}
-          trackStyle={{ backgroundColor: "#1890ff" }}
-          handleStyle={{ borderColor: "#1890ff" }}
+          styles={{
+            track: { backgroundColor: "#1890ff" },
+            handle: { borderColor: "#1890ff" },
+          }}
         />
       </div>
 
@@ -132,7 +126,7 @@ export default function RPYInputs() {
         Reset RPY
       </Button>
 
-      <Text type="secondary" style={{ fontSize: "12px" }}>
+      <Text type="secondary" className="text-xs">
         Z-Y-X 순서로 회전 (Extrinsic)
       </Text>
     </Space>

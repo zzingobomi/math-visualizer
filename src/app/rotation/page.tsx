@@ -1,27 +1,17 @@
 "use client";
 
-import { Row, Col, Card, Typography, Space } from "antd";
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import { Row, Col, Card, Typography, Space } from "antd";
 import MatrixInputs from "@/components/Rotation/UI/MatrixInputs";
 import RPYInputs from "@/components/Rotation/UI/RPYInputs";
 import EulerInputs from "@/components/Rotation/UI/EulerInputs";
 import ZYZInputs from "@/components/Rotation/UI/ZYZInputs";
 import MatrixDisplay from "@/components/Rotation/UI/MatrixDisplay";
+import Scene from "@/components/Rotation/3D/Scene";
 
 const { Title, Text } = Typography;
 
-// Three.js 컴포넌트를 dynamic import로 로드 (SSR 방지)
-const Scene = dynamic(() => import("@/components/Rotation/3D/Scene"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[600px] flex items-center justify-center bg-gray-900 rounded-lg">
-      <Text>Loading 3D Scene...</Text>
-    </div>
-  ),
-});
-
-export default function Home() {
+export default function RotationVisualizer() {
   return (
     <div className="p-6 min-h-screen bg-gray-950">
       <Space direction="vertical" size="large" className="w-full">
@@ -31,8 +21,7 @@ export default function Home() {
             3D Rotation Visualizer
           </Title>
           <Text type="secondary" className="text-base">
-            Interactive tool for understanding transformation matrices, RPY,
-            Euler angles, and ZYZ rotations
+            변환 행렬, RPY, 오일러 각, ZYZ 회전
           </Text>
         </div>
 
@@ -43,16 +32,20 @@ export default function Home() {
             <Card
               title="3D Visualization"
               className="h-full flex flex-col"
-              bodyStyle={{ flex: 1, padding: "16px" }}
+              classNames={{
+                body: "flex-1 p-0",
+              }}
             >
               <Suspense
                 fallback={
-                  <div className="h-[600px] flex items-center justify-center">
+                  <div className="h-full flex items-center justify-center">
                     <Text>Loading...</Text>
                   </div>
                 }
               >
-                <Scene />
+                <div className="h-full w-full">
+                  <Scene />
+                </div>
               </Suspense>
             </Card>
           </Col>
@@ -128,14 +121,12 @@ export default function Home() {
           </Col>
 
           <Col xs={24} md={12}>
-            <Card title="Usage Tips" size="small" variant="borderless">
+            <Card title="사용 팁" size="small" variant="borderless">
               <Space direction="vertical" size="small">
-                <Text>• Drag to rotate the camera view</Text>
-                <Text>• Scroll to zoom in/out</Text>
-                <Text>
-                  • Adjust any rotation values to see real-time updates
-                </Text>
-                <Text>• Compare different rotation representations</Text>
+                <Text>• 드래그하여 카메라 시점을 회전할 수 있습니다</Text>
+                <Text>• 스크롤로 확대/축소 가능합니다</Text>
+                <Text>• 회전 값을 조정하면 실시간으로 업데이트됩니다</Text>
+                <Text>• 서로 다른 회전 표현을 비교해보세요</Text>
               </Space>
             </Card>
           </Col>

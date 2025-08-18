@@ -21,7 +21,7 @@ export default function MatrixInputs() {
 
   return (
     <div>
-      <Row gutter={[8, 8]} style={{ marginBottom: "16px" }}>
+      <Row gutter={[8, 8]} className="mb-4">
         <Col span={8}>
           <InputNumber
             size="small"
@@ -54,7 +54,7 @@ export default function MatrixInputs() {
         </Col>
       </Row>
 
-      <Row gutter={[8, 8]} style={{ marginBottom: "16px" }}>
+      <Row gutter={[8, 8]} className="mb-4">
         <Col span={8}>
           <InputNumber
             size="small"
@@ -87,7 +87,7 @@ export default function MatrixInputs() {
         </Col>
       </Row>
 
-      <Row gutter={[8, 8]} style={{ marginBottom: "16px" }}>
+      <Row gutter={[8, 8]} className="mb-4">
         <Col span={8}>
           <InputNumber
             size="small"
@@ -131,10 +131,7 @@ export default function MatrixInputs() {
         Reset
       </Button>
 
-      <Text
-        type="secondary"
-        style={{ fontSize: "12px", marginTop: "8px", display: "block" }}
-      >
+      <Text type="secondary" className="block mt-2 text-xs">
         직접 회전 행렬 값을 입력하세요
       </Text>
     </div>

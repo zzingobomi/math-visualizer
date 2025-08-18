@@ -9,54 +9,55 @@ export default function MatrixDisplay() {
   const { matrix } = useRotationStore();
 
   const formatNumber = (num: number) => {
-    return num.toFixed(3).padStart(7, " ");
+    const formatted = num.toFixed(3);
+    return (num >= 0 ? ` ${formatted}` : formatted).padEnd(7, " ");
   };
 
+  interface MatrixRowProps {
+    values: [number, number, number];
+    leftBracket: string;
+    rightBracket: string;
+  }
+
+  const MatrixRow = ({ values, leftBracket, rightBracket }: MatrixRowProps) => (
+    <div className="flex items-center">
+      <Text code className="text-blue-400 text-base mr-2">
+        {leftBracket}
+      </Text>
+      {values.map((value, index) => (
+        <Text
+          key={index}
+          code
+          className="text-green-300 font-mono text-sm"
+          style={{ display: "inline-block", width: "60px", textAlign: "right" }}
+        >
+          {formatNumber(value)}
+        </Text>
+      ))}
+      <Text code className="text-blue-400 text-base ml-2">
+        {rightBracket}
+      </Text>
+    </div>
+  );
+
   return (
-    <div
-      style={{
-        fontFamily: 'Monaco, Consolas, "Courier New", monospace',
-        fontSize: "14px",
-        backgroundColor: "#0a0a0a",
-        padding: "16px",
-        borderRadius: "6px",
-        border: "1px solid #434343",
-      }}
-    >
-      <Space direction="vertical" size={4} style={{ width: "100%" }}>
-        <div>
-          <Text code style={{ color: "#ff6b6b" }}>
-            ┌
-          </Text>
-          <Text code>{formatNumber(matrix.m11)}</Text>
-          <Text code>{formatNumber(matrix.m12)}</Text>
-          <Text code>{formatNumber(matrix.m13)}</Text>
-          <Text code style={{ color: "#ff6b6b" }}>
-            ┐
-          </Text>
-        </div>
-        <div>
-          <Text code style={{ color: "#ff6b6b" }}>
-            │
-          </Text>
-          <Text code>{formatNumber(matrix.m21)}</Text>
-          <Text code>{formatNumber(matrix.m22)}</Text>
-          <Text code>{formatNumber(matrix.m23)}</Text>
-          <Text code style={{ color: "#ff6b6b" }}>
-            │
-          </Text>
-        </div>
-        <div>
-          <Text code style={{ color: "#ff6b6b" }}>
-            └
-          </Text>
-          <Text code>{formatNumber(matrix.m31)}</Text>
-          <Text code>{formatNumber(matrix.m32)}</Text>
-          <Text code>{formatNumber(matrix.m33)}</Text>
-          <Text code style={{ color: "#ff6b6b" }}>
-            ┘
-          </Text>
-        </div>
+    <div className="bg-gray-900 p-4 rounded-lg border border-gray-600 shadow-lg">
+      <Space direction="vertical" size={2} className="w-full">
+        <MatrixRow
+          values={[matrix.m11, matrix.m12, matrix.m13]}
+          leftBracket="┌"
+          rightBracket="┐"
+        />
+        <MatrixRow
+          values={[matrix.m21, matrix.m22, matrix.m23]}
+          leftBracket="│"
+          rightBracket="│"
+        />
+        <MatrixRow
+          values={[matrix.m31, matrix.m32, matrix.m33]}
+          leftBracket="└"
+          rightBracket="┘"
+        />
       </Space>
     </div>
   );

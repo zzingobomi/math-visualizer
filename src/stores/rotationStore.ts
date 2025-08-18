@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import * as THREE from "three";
+import { Euler, MathUtils, Matrix4 } from "three";
 import {
   RotationMatrix,
   RPYAngles,
@@ -7,16 +7,14 @@ import {
   ZYZAngles,
 } from "@/types/rotation";
 
-interface RotationStore {
-  // 현재 상태
+interface RotationStore {  
   matrix: RotationMatrix;
   rpy: RPYAngles;
   euler: EulerAngles;
   zyz: ZYZAngles;
-  rotationMatrix4: THREE.Matrix4;
+  rotationMatrix4: Matrix4;
   isUpdating: boolean;
-
-  // 액션
+  
   updateFromMatrix: (matrix: RotationMatrix) => void;
   updateFromRPY: (rpy: RPYAngles) => void;
   updateFromEuler: (euler: EulerAngles) => void;
@@ -34,7 +32,7 @@ const initialState = {
   rpy: { roll: 0, pitch: 0, yaw: 0 },
   euler: { x: 0, y: 0, z: 0, type: "intrinsic" as const },
   zyz: { phi: 0, theta: 0, psi: 0 },
-  rotationMatrix4: new THREE.Matrix4(),
+  rotationMatrix4: new Matrix4(),
 };
 
 export const useRotationStore = create<RotationStore>((set, get) => ({
@@ -47,19 +45,30 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
     set({ isUpdating: true });
 
     // prettier-ignore
-    const mat4 = new THREE.Matrix4().set(
+    const mat4 = new Matrix4().set(
       matrix.m11, matrix.m12, matrix.m13, 0,
       matrix.m21, matrix.m22, matrix.m23, 0,
       matrix.m31, matrix.m32, matrix.m33, 0,
       0,          0,          0,          1
     );
 
-    // Matrix에서 다른 표현들 계산
-    const euler = new THREE.Euler().setFromRotationMatrix(mat4, "ZYX");
+    // RPY 계산 (ZYX 순서)
+    const rpyEuler = new Euler().setFromRotationMatrix(mat4, "ZYX");
     const rpy = {
-      roll: THREE.MathUtils.radToDeg(euler.x),
-      pitch: THREE.MathUtils.radToDeg(euler.y),
-      yaw: THREE.MathUtils.radToDeg(euler.z),
+      roll: MathUtils.radToDeg(rpyEuler.x),
+      pitch: MathUtils.radToDeg(rpyEuler.y),
+      yaw: MathUtils.radToDeg(rpyEuler.z),
+    };
+
+    // Euler 계산 (현재 타입에 따라)
+    const currentEulerType = get().euler.type;
+    const order = currentEulerType === "intrinsic" ? "XYZ" : "ZYX";
+    const eulerRot = new Euler().setFromRotationMatrix(mat4, order);
+    const euler = {
+      x: MathUtils.radToDeg(eulerRot.x),
+      y: MathUtils.radToDeg(eulerRot.y),
+      z: MathUtils.radToDeg(eulerRot.z),
+      type: currentEulerType,
     };
 
     // ZYZ 계산
@@ -68,6 +77,7 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
     set({
       matrix,
       rpy,
+      euler,
       zyz,
       rotationMatrix4: mat4.clone(),
       isUpdating: false,
@@ -79,20 +89,33 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
 
     set({ isUpdating: true });
 
-    const euler = new THREE.Euler(
-      THREE.MathUtils.degToRad(rpy.roll),
-      THREE.MathUtils.degToRad(rpy.pitch),
-      THREE.MathUtils.degToRad(rpy.yaw),
+    const rpyEuler = new Euler(
+      MathUtils.degToRad(rpy.roll),
+      MathUtils.degToRad(rpy.pitch),
+      MathUtils.degToRad(rpy.yaw),
       "ZYX"
     );
 
-    const mat4 = new THREE.Matrix4().makeRotationFromEuler(euler);
+    const mat4 = new Matrix4().makeRotationFromEuler(rpyEuler);
     const matrix = matrix4ToMatrix(mat4);
+
+    // Euler 계산 (현재 타입에 따라)
+    const currentEulerType = get().euler.type;
+    const order = currentEulerType === "intrinsic" ? "XYZ" : "ZYX";
+    const eulerRot = new Euler().setFromRotationMatrix(mat4, order);
+    const euler = {
+      x: MathUtils.radToDeg(eulerRot.x),
+      y: MathUtils.radToDeg(eulerRot.y),
+      z: MathUtils.radToDeg(eulerRot.z),
+      type: currentEulerType,
+    };
+
     const zyz = matrixToZYZ(mat4);
 
     set({
       matrix,
       rpy,
+      euler,
       zyz,
       rotationMatrix4: mat4.clone(),
       isUpdating: false,
@@ -105,22 +128,22 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
     set({ isUpdating: true });
 
     const order = euler.type === "intrinsic" ? "XYZ" : "ZYX";
-    const threeEuler = new THREE.Euler(
-      THREE.MathUtils.degToRad(euler.x),
-      THREE.MathUtils.degToRad(euler.y),
-      THREE.MathUtils.degToRad(euler.z),
+    const threeEuler = new Euler(
+      MathUtils.degToRad(euler.x),
+      MathUtils.degToRad(euler.y),
+      MathUtils.degToRad(euler.z),
       order
     );
 
-    const mat4 = new THREE.Matrix4().makeRotationFromEuler(threeEuler);
+    const mat4 = new Matrix4().makeRotationFromEuler(threeEuler);
     const matrix = matrix4ToMatrix(mat4);
 
     // RPY 계산 (ZYX 순서)
-    const rpyEuler = new THREE.Euler().setFromRotationMatrix(mat4, "ZYX");
+    const rpyEuler = new Euler().setFromRotationMatrix(mat4, "ZYX");
     const rpy = {
-      roll: THREE.MathUtils.radToDeg(rpyEuler.x),
-      pitch: THREE.MathUtils.radToDeg(rpyEuler.y),
-      yaw: THREE.MathUtils.radToDeg(rpyEuler.z),
+      roll: MathUtils.radToDeg(rpyEuler.x),
+      pitch: MathUtils.radToDeg(rpyEuler.y),
+      yaw: MathUtils.radToDeg(rpyEuler.z),
     };
 
     const zyz = matrixToZYZ(mat4);
@@ -143,16 +166,29 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
     const mat4 = zyzToMatrix4(zyz);
     const matrix = matrix4ToMatrix(mat4);
 
-    const rpyEuler = new THREE.Euler().setFromRotationMatrix(mat4, "ZYX");
+    // RPY 계산
+    const rpyEuler = new Euler().setFromRotationMatrix(mat4, "ZYX");
     const rpy = {
-      roll: THREE.MathUtils.radToDeg(rpyEuler.x),
-      pitch: THREE.MathUtils.radToDeg(rpyEuler.y),
-      yaw: THREE.MathUtils.radToDeg(rpyEuler.z),
+      roll: MathUtils.radToDeg(rpyEuler.x),
+      pitch: MathUtils.radToDeg(rpyEuler.y),
+      yaw: MathUtils.radToDeg(rpyEuler.z),
+    };
+
+    // Euler 계산 (현재 타입에 따라)
+    const currentEulerType = get().euler.type;
+    const order = currentEulerType === "intrinsic" ? "XYZ" : "ZYX";
+    const eulerRot = new Euler().setFromRotationMatrix(mat4, order);
+    const euler = {
+      x: MathUtils.radToDeg(eulerRot.x),
+      y: MathUtils.radToDeg(eulerRot.y),
+      z: MathUtils.radToDeg(eulerRot.z),
+      type: currentEulerType,
     };
 
     set({
       matrix,
       rpy,
+      euler,
       zyz,
       rotationMatrix4: mat4.clone(),
       isUpdating: false,
@@ -165,7 +201,7 @@ export const useRotationStore = create<RotationStore>((set, get) => ({
 }));
 
 // 유틸리티 함수들
-function matrix4ToMatrix(mat4: THREE.Matrix4): RotationMatrix {
+function matrix4ToMatrix(mat4: Matrix4): RotationMatrix {
   const m = mat4.elements;
   // prettier-ignore
   return {
@@ -175,7 +211,7 @@ function matrix4ToMatrix(mat4: THREE.Matrix4): RotationMatrix {
   };
 }
 
-function matrixToZYZ(mat4: THREE.Matrix4): ZYZAngles {
+function matrixToZYZ(mat4: Matrix4): ZYZAngles {
   const m = mat4.elements;
 
   const theta = Math.acos(Math.max(-1, Math.min(1, m[10]))); // m33
@@ -185,25 +221,25 @@ function matrixToZYZ(mat4: THREE.Matrix4): ZYZAngles {
     const phi = 0;
     const psi = Math.atan2(m[1], m[0]); // m21, m11
     return {
-      phi: THREE.MathUtils.radToDeg(phi),
-      theta: THREE.MathUtils.radToDeg(theta),
-      psi: THREE.MathUtils.radToDeg(psi),
+      phi: MathUtils.radToDeg(phi),
+      theta: MathUtils.radToDeg(theta),
+      psi: MathUtils.radToDeg(psi),
     };
   } else {
     const phi = Math.atan2(m[6], -m[2]); // m32, -m31
     const psi = Math.atan2(m[9], m[8]); // m23, m13
     return {
-      phi: THREE.MathUtils.radToDeg(phi),
-      theta: THREE.MathUtils.radToDeg(theta),
-      psi: THREE.MathUtils.radToDeg(psi),
+      phi: MathUtils.radToDeg(phi),
+      theta: MathUtils.radToDeg(theta),
+      psi: MathUtils.radToDeg(psi),
     };
   }
 }
 
-function zyzToMatrix4(zyz: ZYZAngles): THREE.Matrix4 {
-  const phi = THREE.MathUtils.degToRad(zyz.phi);
-  const theta = THREE.MathUtils.degToRad(zyz.theta);
-  const psi = THREE.MathUtils.degToRad(zyz.psi);
+function zyzToMatrix4(zyz: ZYZAngles): Matrix4 {
+  const phi = MathUtils.degToRad(zyz.phi);
+  const theta = MathUtils.degToRad(zyz.theta);
+  const psi = MathUtils.degToRad(zyz.psi);
 
   const c1 = Math.cos(phi),
     s1 = Math.sin(phi);
@@ -213,7 +249,7 @@ function zyzToMatrix4(zyz: ZYZAngles): THREE.Matrix4 {
     s3 = Math.sin(psi);
 
   // prettier-ignore
-  return new THREE.Matrix4().set(
+  return new Matrix4().set(
     c1 * c2 * c3 - s1 * s3,    -c1 * c2 * s3 - s1 * c3,    c1 * s2,    0,
     s1 * c2 * c3 + c1 * s3,    -s1 * c2 * s3 + c1 * c3,    s1 * s2,    0,
     -s2 * c3,                   s2 * s3,                   c2,         0,
