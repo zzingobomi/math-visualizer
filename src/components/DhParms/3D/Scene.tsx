@@ -1,6 +1,6 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { matrix } from "mathjs";
 import { useDHParameterStore } from "@/stores/dhParameterStore";
 import { useForwardKinematics } from "@/hooks/useForwardKinematics";
@@ -96,6 +96,8 @@ export const Scene: React.FC = React.memo(() => {
 
         {/* 컨트롤 */}
         <OrbitControls enablePan enableZoom enableRotate />
+
+        {process.env.NODE_ENV === "development" && <Stats />}
       </Canvas>
 
       {/* DH Parameter 테이블 오버레이 */}

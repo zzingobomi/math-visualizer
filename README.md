@@ -5,6 +5,7 @@
 ### TODO
 
 - Rotation 에 여러물체를 두어 Intrinsic/Extrinsic 차이 느껴보기
+- 실제 로봇 Visual 작업때는 최적화 작업도 고려해야 할듯
 
 ##### 정리
 

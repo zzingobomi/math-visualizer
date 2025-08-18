@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Slider, InputNumber, Typography } from "antd";
+import { debounce } from "lodash";
 import { ParameterConfig } from "@/types/dhparams";
 
 const { Text } = Typography;
@@ -15,9 +16,14 @@ export const ParameterSlider = React.memo(
   ({ label, value, config, onChange }: ParameterSliderProps) => {
     const { min, max, step, precision, unit, color } = config;
 
+    const debouncedChange = React.useMemo(
+      () => debounce((val: number) => onChange(val), 16), // 16ms ≈ 60FPS
+      [onChange]
+    );
+
     const handleChange = (newValue: number | null) => {
       if (newValue !== null) {
-        onChange(newValue);
+        debouncedChange(newValue);
       }
     };
 
